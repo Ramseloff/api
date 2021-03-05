@@ -1,0 +1,50 @@
+version: '3.7'
+
+volumes:
+    logs:
+        driver: local
+
+services:
+    test.service:
+        build: ./containers/php
+        volumes:
+            - ./code:/code
+        networks:
+            - app-network
+    test:
+        build: ./containers/php
+        volumes:
+            - ./code:/code
+        networks:
+            - app-network
+#    slim:
+#        image: php:7-alpine
+#        working_dir: /var/www
+#        command: php -S 0.0.0.0:8086 -t public
+#        environment:
+#            docker: "true"
+#        ports:
+#            - 8085:8080
+#        volumes:
+#          - ./code/test.service:/var/www
+#           - logs:/var/www/logs
+    web:
+        image: nginx:1.14
+        ports:
+            - "8180:80"
+            - "8190:8090"
+            - "8170:8070"
+        volumes:
+            - ./containers/nginx:/etc/nginx/conf.d
+            - ./code:/code
+            - ./logs/nginx:/var/log/nginx
+        links:
+            - "test.service"
+            - "test"
+
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
