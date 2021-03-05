@@ -22,5 +22,7 @@ interface IDataSource
 
     public function val($cmd, $params = []);
 
+    public function lastId();
 
+    public function exec($cmd, $params = [], $mode = self::MODE_EXEC);
 }

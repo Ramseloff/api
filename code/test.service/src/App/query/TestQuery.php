@@ -3,6 +3,7 @@
 namespace App\query;
 
 use Psr\Container\ContainerInterface;
+use TestEngine\core\IDataSource;
 use TestEngine\core\IQuery;
 
 class TestQuery implements IQuery
@@ -19,10 +20,10 @@ class TestQuery implements IQuery
     public function __invoke($queryData, $queryResult)
     {
         $result = $this->db->exec("
-            select j.id, j.title, j.descr, j.region_id 
-            from job j where j.id=:job_id;
-        ", ['job_id' => $jobId], IDataSource::MODE_LIST);
+            select a.id, a.title, a.content 
+            from articles a order by a.id;
+        ", [], IDataSource::MODE_LIST);
 
-        return ['job' => $result] + $queryResult;
+        return ['jobs' => $result] + $queryResult;
     }
 }
